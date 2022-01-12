@@ -1,0 +1,7 @@
+const path = require('path');
+module.exports = {
+  'config': path.resolve('./sequelizeAuto/config', 'config.json'),
+  'migrations-path': path.resolve('./sequelizeAuto', 'migrations'),
+  'models-path': path.resolve('./sequelizeAuto', 'models'),
+  'seeders-path': path.resolve('./sequelizeAuto', 'seeders')
+}

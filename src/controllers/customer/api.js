@@ -1,6 +1,7 @@
 const Senquelize = require("sequelize");
 // const Op = Senquelize.Op;
 const Customer = require("./models/customer");
+// const db = require("../../../sequelizeAuto/models/index");
 
 async function getDataCustomer(req, res){
     // res.send('ok')
@@ -11,7 +12,7 @@ async function getDataCustomer(req, res){
         // console.log(data);
         res.send(data)
     } catch (e) {
-        console.log('lỗi');
+        console.log(e);
     }
 }
 
