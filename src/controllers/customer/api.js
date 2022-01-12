@@ -7,7 +7,7 @@ async function getDataCustomer(req, res){
     try {
         // await Customer.sync({force: true})
         const customer = await Customer.findAll();
-        let data = JSON.stringify(customer)
+        let data = customer;
         // console.log(data);
         res.send(data)
     } catch (e) {
@@ -17,34 +17,20 @@ async function getDataCustomer(req, res){
 
 async function setInsertCustomer(req, res) {
     try {
-        let dataCreate = {
-            phone: 'phone',
-            name: 'name564',
-            deviceId: ["ok", "detail"],
-            avatar: 'avatar',
-            city: 'city',
-            district: 'district',
-            wards: 'wards',
-            detailAdress: 'detailAdress',
-            status: 1
-        }
-        //validate
-        // let {phone, name, deviceId, avatar, city, district, wards, detailAdress, status} = req.body;
+        let {phone, name, deviceId, avatar, city, district, wards, detailAdress, status} = req.body;
         await Customer.create({
             // id: 1,
-            phone: dataCreate.phone,
-            name: dataCreate.name,
-            deviceId: dataCreate.deviceId[0],
-            avatar: dataCreate.avatar,
-            city: dataCreate.city,
-            district: dataCreate.district,
-            wards: dataCreate.wards,
-            detailAdress: dataCreate.detailAdress,
-            status: dataCreate.status
+            phone: phone,
+            name: name,
+            deviceId: deviceId[0],
+            avatar: avatar,
+            city: city,
+            district: district,
+            wards: wards,
+            detailAdress: detailAdress,
+            status: status
         });
-        // console.log(JSON.stringify(createCustomer));
-        // console.log('ok');
-        res.send(dataCreate)
+        res.send(dataCreate)  
     } catch (error) {
         console.log('lỗi');
     }
