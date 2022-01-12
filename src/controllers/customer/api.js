@@ -17,7 +17,7 @@ async function getDataCustomer(req, res){
 
 async function setInsertCustomer(req, res) {
     try {
-        let data = {
+        let dataCreate = {
             phone: 'phone',
             name: 'name564',
             deviceId: ["ok", "detail"],
@@ -32,25 +32,81 @@ async function setInsertCustomer(req, res) {
         // let {phone, name, deviceId, avatar, city, district, wards, detailAdress, status} = req.body;
         await Customer.create({
             // id: 1,
-            phone: data.phone,
-            name: data.name,
-            deviceId: data.deviceId[0],
-            avatar: data.avatar,
-            city: data.city,
-            district: data.district,
-            wards: data.wards,
-            detailAdress: data.detailAdress,
-            status: data.status
+            phone: dataCreate.phone,
+            name: dataCreate.name,
+            deviceId: dataCreate.deviceId[0],
+            avatar: dataCreate.avatar,
+            city: dataCreate.city,
+            district: dataCreate.district,
+            wards: dataCreate.wards,
+            detailAdress: dataCreate.detailAdress,
+            status: dataCreate.status
         });
         // console.log(JSON.stringify(createCustomer));
         // console.log('ok');
-        res.send(data)
+        res.send(dataCreate)
     } catch (error) {
+        console.log('lỗi');
+    }
+}
+
+async function setEditCustomer(req, res) {
+    try {
+        let id = req.params.id;
+        let getCustomer = await Customer.findByPk(id);
+        // let {name, ownerName, code, email, image, address} = req.body;
+        let update1 = {
+            name: 'name564',
+            deviceId: ["ok", "detail"],
+            avatar: 'avatar',
+            district: 'district',
+            detailAdress: 'detailAdress',
+            status: 1
+        }
+        let dataUpdate = {
+            phone: !update1.phone ? getCustomer.phone : 'phone1',
+            name: !update1.name ? getCustomer.name : 'name5642',
+            deviceId: !update1.deviceId ? getCustomer.deviceId : ["ok", "detail"],
+            avatar: !update1.avatar ? getCustomer.avatar : 'avatar3',
+            city: !update1.city ? getCustomer.city : 'city4',
+            district: !update1.district ? getCustomer.district : 'district5',
+            wards: !update1.wards ? getCustomer.wards : 'wards6',
+            detailAdress: !update1.detailAdress ? getCustomer.detailAdress : 'detailAdress7',
+            status: !update1.status ? getCustomer.status : 1
+        };
+        await Customer.update({...dataUpdate},
+            {
+                where: {
+                    id: id
+                },
+                returning: true
+            });
+        res.send(dataUpdate)
+    } catch (e) {
+        console.log('lỗi');
+    }
+}
+
+async function setDeleteCustomer(req, res) {
+    try {
+        let id = req.params.id;
+    
+        await Customer.destroy(
+            {
+                where: {
+                    id: id
+                },
+                returning: true
+            });
+        res.send('đã xóa')
+    } catch (e) {
         console.log('lỗi');
     }
 }
 
 module.exports = {
     getDataCustomer,
-    setInsertCustomer
+    setInsertCustomer,
+    setEditCustomer,
+    setDeleteCustomer
 }
