@@ -7,6 +7,8 @@ require('./src/controllers/base/mysql/mysql');
 const bodyParser = require('body-parser');
 
 
+
+
 var app = express();
 
 // view engine setup
@@ -20,6 +22,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 var routes = require('./src/routes/index');
 app.use('/api/v1', routes)

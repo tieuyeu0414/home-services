@@ -1,12 +1,12 @@
 const Senquelize = require("sequelize");
 // const Op = Senquelize.Op;
-const Device = require("./models/device");
+const Service = require("./models/service");
 
 
-async function getDataDevice(req, res){
+async function getDataService(req, res){
     try {
-        const device = await Device.findAll();
-        let data = device;
+        const service = await Service.findAll();
+        let data = service;
         res.send(data)
     } catch (e) {
         console.log('lỗi');
@@ -15,13 +15,11 @@ async function getDataDevice(req, res){
 
 
 
-async function insertDevice(req, res) {
+async function insertService(req, res) {
     try {
-        let { deviceId, statusDevice, customerId } = req.body;
-        let data = await Device.create({
-            deviceId,
-            statusDevice,
-            customerId
+        let { nameService } = req.body;
+        let data = await Service.create({
+            nameService
         });
         return res.status(200).json({
             data
@@ -34,9 +32,9 @@ async function insertDevice(req, res) {
 
 
 
-async function deleteDevice(req, res) {
+async function deleteService(req, res) {
     let id = req.params.id;
-    let device =  await Device.findAll(
+    let service =  await Service.findAll(
         {
             where: {
                 id: id
@@ -44,14 +42,14 @@ async function deleteDevice(req, res) {
         }
     );
         
-    if(device.length == 0) {
+    if(service.length == 0) {
         return res.status(200).json({
             errorMessage:`The device isn't exist!`
         })
     }
     
     try {
-        await Device.destroy(
+        await Service.destroy(
             {
                 where: {
                     id: id
@@ -68,26 +66,24 @@ async function deleteDevice(req, res) {
 }
 
 
-async function updateDevice(req, res) {
+async function updateService(req, res) {
     let id = req.params.id;
-    let { deviceId, statusDevice, customerId } = req.body;
-    let device =  await Device.findAll(
+    let { nameService } = req.body;
+    let service =  await Service.findAll(
         {
             where: {
                 id: id
             },
         }
     );
-    if(device.length == 0) {
+    if(service.length == 0) {
         return res.status(200).json({
             errorMessage:`The device isn't exist!`
         })
     }
     try {
-        await Device.update({ 
-            deviceId,
-            statusDevice,
-            customerId
+        await Service.update({ 
+            nameService
          }, {
             where: {
                 id: id
@@ -105,8 +101,8 @@ async function updateDevice(req, res) {
 
 
 module.exports = {
-    getDataDevice,
-    insertDevice,
-    deleteDevice,
-    updateDevice
+    getDataService,
+    insertService,
+    deleteService,
+    updateService
 }
