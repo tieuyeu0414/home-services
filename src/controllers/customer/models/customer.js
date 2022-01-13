@@ -10,7 +10,8 @@ const Customer = db.sequelize.define('customer', {
     },
     phone: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     name: {
         type: Sequelize.STRING,
@@ -23,8 +24,10 @@ const Customer = db.sequelize.define('customer', {
         }
     },
     deviceId: {
-        type: Sequelize.JSON,
-        allowNull: false
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: true,
+        defaultValue: Sequelize.UUIDV4
     },
     avatar: {
         type: Sequelize.STRING,

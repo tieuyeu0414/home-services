@@ -6,10 +6,14 @@ async function getDataCustomer(req, res){
     // res.send('ok')
     try {
         // await Customer.sync({force: true})
-        const customer = await Customer.findAll();
-        let data = customer;
+        const customer = await Customer.findAll()
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+        // let data = customer
         // console.log(data);
-        res.send(data)
+        // res.send(data)
     } catch (e) {
         console.log('lỗi');
     }
@@ -22,13 +26,17 @@ async function setInsertCustomer(req, res) {
             // id: 1,
             phone: phone,
             name: name,
-            deviceId: deviceId[0],
+            deviceId: deviceId,
             avatar: avatar,
             city: city,
             district: district,
             wards: wards,
             detailAdress: detailAdress,
-            status: status
+        })
+        // console.log(JSON.stringify(createCustomer));
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
         });
     } catch (error) {
         console.log(error);
@@ -39,25 +47,18 @@ async function setEditCustomer(req, res) {
     try {
         let id = req.params.id;
         let getCustomer = await Customer.findByPk(id);
-        // let {name, ownerName, code, email, image, address} = req.body;
-        let update1 = {
-            name: 'name564',
-            deviceId: ["ok", "detail"],
-            avatar: 'avatar',
-            district: 'district',
-            detailAdress: 'detailAdress',
-            status: 1
-        }
+        let {phone, name, deviceId, avatar, city, district, wards, detailAdress, status} = req.body;
+
         let dataUpdate = {
-            phone: !update1.phone ? getCustomer.phone : 'phone1',
-            name: !update1.name ? getCustomer.name : 'name5642',
-            deviceId: !update1.deviceId ? getCustomer.deviceId : ["ok", "detail"],
-            avatar: !update1.avatar ? getCustomer.avatar : 'avatar3',
-            city: !update1.city ? getCustomer.city : 'city4',
-            district: !update1.district ? getCustomer.district : 'district5',
-            wards: !update1.wards ? getCustomer.wards : 'wards6',
-            detailAdress: !update1.detailAdress ? getCustomer.detailAdress : 'detailAdress7',
-            status: !update1.status ? getCustomer.status : 1
+            phone: !phone ? getCustomer.phone : phone,
+            name: !name ? getCustomer.name : name,
+            deviceId: !deviceId ? getCustomer.deviceId : deviceId,
+            avatar: !avatar ? getCustomer.avatar : avatar,
+            city: !city ? getCustomer.city : city,
+            district: !district ? getCustomer.district : district,
+            wards: !wards ? getCustomer.wards : wards,
+            detailAdress: !detailAdress ? getCustomer.detailAdress : detailAdress,
+            status: !status ? getCustomer.status : status
         };
         await Customer.update({...dataUpdate},
             {
@@ -65,10 +66,13 @@ async function setEditCustomer(req, res) {
                     id: id
                 },
                 returning: true
+            })
+            .then(result => res.sendStatus(204))
+            .catch(error => {
+                res.status(412).json({msg: error.message});
             });
-        res.send(dataUpdate)
     } catch (e) {
-        console.log('lỗi');
+        console.log(e);
     }
 }
 
@@ -82,10 +86,13 @@ async function setDeleteCustomer(req, res) {
                     id: id
                 },
                 returning: true
+            })
+            .then(result => res.sendStatus(204))
+            .catch(error => {
+                res.status(412).json({msg: error.message});
             });
-        res.send('đã xóa')
     } catch (e) {
-        console.log('lỗi');
+        console.log(e);
     }
 }
 
