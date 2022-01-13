@@ -97,7 +97,7 @@ Staff.sync()
     .then(() => {
         Staff.findOrCreate({
             where: {
-                role: "admin"
+                role: 6
             },
             defaults: {
                 email: config.email, 

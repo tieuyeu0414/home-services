@@ -53,7 +53,7 @@ async function getDataStaff(req, res){
         const customer = await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
-                role: { [Op.notLike]: 'admin' }
+                role: { [Op.notLike]: 6 }
             }
         })
         .then(result => res.json(result))
