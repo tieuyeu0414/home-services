@@ -80,7 +80,6 @@ async function setInsertStaff(req, res){
             wards: wards,
             role: role,
         })
-        // console.log(JSON.stringify(createCustomer));
         .then(result => res.json(result))
         .catch(error => {
             res.status(412).json({msg: error.message});
