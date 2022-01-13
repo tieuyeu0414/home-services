@@ -30,9 +30,8 @@ async function setInsertCustomer(req, res) {
             detailAdress: detailAdress,
             status: status
         });
-        res.send(dataCreate)  
     } catch (error) {
-        console.log('lỗi');
+        console.log(error);
     }
 }
 
