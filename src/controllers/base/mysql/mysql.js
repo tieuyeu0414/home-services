@@ -10,6 +10,7 @@ const sequelize = new Sequelize(database, user, password, {
   host: host,
   port: port,
   dialect: "mysql",
+  logging: false,
 });
 
  
@@ -17,6 +18,13 @@ let connect = () =>{
     try {
         sequelize.authenticate();
         console.log('Connection has been established successfully.');
+        sequelize.sync()
+        .then((res) => {
+            console.log();(`Đã đồng bộ model.`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }

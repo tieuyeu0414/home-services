@@ -3,8 +3,8 @@ const route = express();
 
 const customerAPI = require('./api')
 route.get('/', customerAPI.getDataCustomer)
-route.get('/insert', customerAPI.setInsertCustomer)
-route.get('/edit/:id', customerAPI.setEditCustomer)
-route.get('/delete/:id', customerAPI.setDeleteCustomer)
+route.post('/insert', customerAPI.setInsertCustomer)
+route.put('/edit/:id', customerAPI.setEditCustomer)
+route.delete('/delete/:id', customerAPI.setDeleteCustomer)
 
 module.exports = route;
