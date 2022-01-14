@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 
 const db = require('../../base/mysql/mysql');
+const Staff = require('../../admin/models/staff')
 
 const Request = db.sequelize.define('request', {
     id: {
@@ -33,5 +34,9 @@ const Request = db.sequelize.define('request', {
         allowNull: false
     },
 });
+
+Request.belongsTo(Staff);
+Staff.hasOne(Request)
+
 
 module.exports = Request

@@ -32,6 +32,8 @@ app.use(bodyParser.urlencoded({
 var routes = require('./src/routes/index');
 app.use('/api/v1', routes)
 
+app.use('/docs', express.static('./docs'))
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

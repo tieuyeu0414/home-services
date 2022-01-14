@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "docs": "apidoc -i ./ -e node_modules -o ./docs"
   },
   "apidoc": {
     "name": "Node Task API - Documentation",

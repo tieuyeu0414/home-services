@@ -2,6 +2,8 @@ const Senquelize = require("sequelize");
 // const Op = Senquelize.Op;
 const Customer = require("./models/customer");
 
+
+
 async function getDataCustomer(req, res){
     // res.send('ok')
     try {
