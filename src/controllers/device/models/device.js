@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
-
+const Request = require('../../request/models/request') 
+const Customer = require('../../customer/models/customer') 
 const db = require('../../base/mysql/mysql');
 
 const Device = db.sequelize.define('device', {
@@ -10,7 +11,8 @@ const Device = db.sequelize.define('device', {
     },
     deviceId: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     statusDevice: {
         type: Sequelize.ENUM('0','1','2','3'),
@@ -19,8 +21,15 @@ const Device = db.sequelize.define('device', {
     },
     customerId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
+    phoneCustomer: {
+        type: Sequelize.STRING,
+        allowNull: false,
+    }
 });
+
+Device.hasMany(Request, {foreignKey: 'deviceId', sourceKey: 'deviceId'});
+Customer.hasMany(Device, {foreignKey: 'customerId', sourceKey: 'id'});
 
 module.exports = Device

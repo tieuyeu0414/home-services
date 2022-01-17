@@ -13,7 +13,7 @@ router.use('/device', device)
 const request = require('../controllers/request/route')
 router.use('/request', request)
 
-const service = require('../controllers/service/route')
-router.use('/service', service)
+// const service = require('../controllers/service/route')
+// router.use('/service', service)
 
 module.exports = router;

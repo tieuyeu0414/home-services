@@ -102,11 +102,39 @@ async function updateDevice(req, res) {
 }
 
 
-
+async function getFilterDevice(req, res) {
+    try {
+        let {search} = req.body;
+        const customer = await Device.findAll()
+        // await Customer.findAll({
+        //     where: {
+        //         [Op.or]: [
+        //             {id: search},
+        //             {phone: search},
+        //             {name: search},
+        //             {city: search},
+        //             {district: search},
+        //             {wards: search},
+        //             {detailAddress: search}
+        //         ]
+        //     }   
+        // })
+        .then(result => res.json(result.filter(item=>
+            item.id === Number(search) ? item : '' ||
+            item.deviceId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
+        )))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 module.exports = {
     getDataDevice,
     insertDevice,
     deleteDevice,
-    updateDevice
+    updateDevice,
+    getFilterDevice
 }
