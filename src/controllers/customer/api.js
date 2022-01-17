@@ -115,6 +115,7 @@ async function getFilterCityCustomer(req, res) {
 async function getFilterDistrictCustomer(req, res) {
     try {
         let namefilter = req.params.namefilter;
+        
     
         await Customer.findAll({
             where: {district: namefilter}

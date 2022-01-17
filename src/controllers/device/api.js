@@ -1,6 +1,7 @@
 const Senquelize = require("sequelize");
 // const Op = Senquelize.Op;
 const Device = require("./models/device");
+const Customer = require('../customer/models/customer')
 
 
 async function getDataDevice(req, res){
@@ -11,6 +12,37 @@ async function getDataDevice(req, res){
     } catch (e) {
         console.log('lỗi');
     }
+}
+
+
+async function getDataRowDevice(req, res){
+    // try {
+    //     const device = await Device.findAll();
+    //     let data = device;
+    //     res.send(data)
+    // } catch (e) {
+    //     console.log('lỗi');
+    // }
+
+    // data = await Device.findAll({
+    //     include: [
+    //         {
+    //             model: Customer,
+    //             where: {
+    //                 id: customerId
+    //             }
+    //         }
+    //     ]
+    // });
+
+     try {
+        let data  = await Customer.findAll();
+        res.send(data)
+    } catch (e) {
+        console.log(e);
+    }
+
+
 }
 
 
@@ -136,5 +168,6 @@ module.exports = {
     insertDevice,
     deleteDevice,
     updateDevice,
-    getFilterDevice
+    getFilterDevice,
+    getDataRowDevice
 }
