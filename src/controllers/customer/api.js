@@ -96,10 +96,10 @@ async function setDeleteCustomer(req, res) {
 
 async function getFilterCityCustomer(req, res) {
     try {
-        let namefilter = req.params.namefilter;
+        let {city} = req.body;
     
         await Customer.findAll({
-            where: {city: namefilter}
+            where: {city: city}
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -112,10 +112,15 @@ async function getFilterCityCustomer(req, res) {
 
 async function getFilterDistrictCustomer(req, res) {
     try {
-        let namefilter = req.params.namefilter;
+        let {city, district} = req.body;
     
         await Customer.findAll({
-            where: {district: namefilter}
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                ]
+            }
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -128,10 +133,16 @@ async function getFilterDistrictCustomer(req, res) {
 
 async function getFilterWardsCustomer(req, res) {
     try {
-        let namefilter = req.body.namefilter;
+        let {city, district, wards} = req.body;
     
         await Customer.findAll({
-            where: {wards: namefilter}
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                    {wards: wards}
+                ]
+            }
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -163,11 +174,24 @@ async function getFilterCustomer(req, res) {
             item.id === Number(search) ? item : '' ||
             item.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
             item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
-            item.city.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.district.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.wards.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
             item.detailAddress.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
         )))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getPagination(req, res) {
+    try {
+        let offset = req.params.offset;
+        await Customer.findAndCountAll({
+            offset: 1,
+            limit: 1
+        })
+        .then(result => res.json(result.rows))
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -184,5 +208,6 @@ module.exports = {
     getFilterCityCustomer,
     getFilterDistrictCustomer,
     getFilterWardsCustomer,
-    getFilterCustomer
+    getFilterCustomer,
+    getPagination
 }

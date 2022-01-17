@@ -67,13 +67,14 @@ async function getDataStaff(req, res){
 
 async function setInsertStaff(req, res){
     try {
-        let {email, password, fullName, phoneNumber, avatar, city, district, wards, role} = req.body;
+        let {email, password, fullName, phoneNumber, staffId, avatar, city, district, wards, role} = req.body;
         await Staff.create({
             // id: 1,
             email: email,
             password: password,
             fullName: fullName,
             phoneNumber: phoneNumber,
+            staffId: staffId,
             avatar: avatar,
             city: city,
             district: district,
@@ -140,10 +141,104 @@ async function setDeleteStaff(req, res) {
     }
 }
 
+async function getFilterCityStaff(req, res) {
+    try {
+        let {city} = req.body;
+    
+        await Staff.findAll({
+            where: {city: city}
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterDistrictStaff(req, res) {
+    try {
+        let {city, district} = req.body;
+    
+        await Staff.findAll({
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                ]
+            }
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterWardsStaff(req, res) {
+    try {
+        let {city, district, wards} = req.body;
+    
+        await Staff.findAll({
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                    {wards: wards}
+                ]
+            }
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterStaff(req, res) {
+    try {
+        let {search} = req.body;
+        await Staff.findAll()
+        // await Customer.findAll({
+        //     where: {
+        //         [Op.or]: [
+        //             {id: search},
+        //             {phone: search},
+        //             {name: search},
+        //             {city: search},
+        //             {district: search},
+        //             {wards: search},
+        //             {detailAddress: search}
+        //         ]
+        //     }   
+        // })
+        .then(result => res.json(result.filter(item=>
+            item.id === Number(search) ? item : '' ||
+            item.phoneNumber.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
+            item.fullName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
+            item.staffId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
+        )))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     login,
     getDataStaff,
     setInsertStaff,
     setEditStaff,
-    setDeleteStaff
+    setDeleteStaff,
+    getFilterCityStaff,
+    getFilterDistrictStaff,
+    getFilterWardsStaff,
+    getFilterStaff
 }

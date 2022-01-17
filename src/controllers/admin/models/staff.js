@@ -43,9 +43,18 @@ const Staff = db.sequelize.define('staff', {
         unique: true
     },
     avatar: Sequelize.STRING,
-    city: Sequelize.STRING,
-    district: Sequelize.STRING,
-    wards: Sequelize.STRING,
+    city: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    district: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    wards: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     role: {
         type: Sequelize.ENUM,
         values: ['1', '2', '3', '4', '5', '6'],
@@ -107,11 +116,15 @@ Staff.sync()
                 password: config.password, 
                 staffId: 123456,
                 role: 6,
+                city: 'hà nội',
+                district: 'long biên',
+                wards: 'sài đồng',
                 phoneNumber: config.phoneNumber
             }
         });
     });
 
 Staff.hasOne(Request, {foreignKey: 'staffId', sourceKey: 'staffId'});
+Request.belongsTo(Staff, {foreignKey: 'staffId', sourceKey: 'staffId'})
 
 module.exports = Staff
