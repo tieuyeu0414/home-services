@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-
+// const Customer = require('../../customer/models/customer')
 const db = require('../../base/mysql/mysql');
 const Staff = require('../../admin/models/staff')
 
@@ -9,17 +9,20 @@ const Request = db.sequelize.define('request', {
         autoIncrement: true,
         primaryKey: true
     },
-    customerId: {
-        type: Sequelize.INTEGER,
+    phoneCustomer: {
+        type: Sequelize.STRING,
+        unique: true,
         allowNull: false
     },
     deviceId: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
-    serviceId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+    services: {
+        type: Sequelize.ENUM,
+        values: ['1', '2', '3', '4', '5'],
+        comment: "1:Điều hòa, 2:Máy lọc nước, 3:Tủ lạnh, 4:Bình nóng lạnh, 5:Dịch vụ"
     },
     note: {
         type: Sequelize.TEXT,
@@ -30,13 +33,12 @@ const Request = db.sequelize.define('request', {
         defaultValue: "0"
     },
     staffId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
     },
 });
 
-Request.belongsTo(Staff);
-Staff.hasOne(Request)
-
+// Request.belongsTo(Customer, {foreignKey: 'phoneCustomer', targetKey: 'phone'});
 
 module.exports = Request

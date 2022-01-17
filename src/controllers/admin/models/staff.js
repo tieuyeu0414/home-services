@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const bcrypt = require('bcrypt');
 const db = require('../../base/mysql/mysql');
 const config = require('../../../../config/config').admin;
+const Request = require('../../request/models/request')
 
 const Staff = db.sequelize.define('staff', {
     id: {
@@ -30,14 +31,16 @@ const Staff = db.sequelize.define('staff', {
         }
     },
     staffId: {
-        type: Sequelize.UUID,
+        // type: Sequelize.UUID,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        defaultValue: Sequelize.UUIDV4
+        // defaultValue: Sequelize.UUIDV4
     },
     phoneNumber: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     avatar: Sequelize.STRING,
     city: Sequelize.STRING,
@@ -102,10 +105,13 @@ Staff.sync()
             defaults: {
                 email: config.email, 
                 password: config.password, 
+                staffId: 123456,
                 role: 6,
                 phoneNumber: config.phoneNumber
             }
         });
     });
+
+Staff.hasOne(Request, {foreignKey: 'staffId', sourceKey: 'staffId'});
 
 module.exports = Staff

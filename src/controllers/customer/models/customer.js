@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-
+const Request = require('../../request/models/request')
 const db = require('../../base/mysql/mysql');
 
 const Customer = db.sequelize.define('customer', {
@@ -23,25 +23,33 @@ const Customer = db.sequelize.define('customer', {
             }
         }
     },
-    deviceId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        unique: true,
-        defaultValue: Sequelize.UUIDV4
-    },
     avatar: {
         type: Sequelize.STRING,
         allowNull: true
     },
-    city: Sequelize.STRING,
-    district: Sequelize.STRING,
-    wards: Sequelize.STRING,
-    detailAdress: Sequelize.STRING,
+    city: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    district: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    wards: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    detailAddress: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     status: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
     },
 });
+
+Customer.hasMany(Request, {foreignKey: 'phoneCustomer', sourceKey: 'phone'});
 
 module.exports = Customer

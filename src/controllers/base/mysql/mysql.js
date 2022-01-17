@@ -19,12 +19,12 @@ let connect = () =>{
         sequelize.authenticate();
         console.log('Connection has been established successfully.');
         sequelize.sync()
-                .then((res) => {
-                    console.log();(`Đã đồng bộ model.`);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+        .then((res) => {
+            console.log();(`Đã đồng bộ model.`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }
