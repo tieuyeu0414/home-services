@@ -32,6 +32,6 @@ const Device = db.sequelize.define('device', {
 Device.hasMany(Request, {foreignKey: 'deviceId', sourceKey: 'deviceId'});
 Request.belongsTo(Device, {foreignKey: 'deviceId', sourceKey: 'deviceId'})
 Customer.hasMany(Device, {foreignKey: 'customerId', sourceKey: 'id'});
-Device.belongsTo(Customer, {foreignKey: 'customerId', sourceKey: 'id'})
+Device.belongsTo(Customer, {foreignKey: 'customerId', targetKey: 'id'});
 
 module.exports = Device
