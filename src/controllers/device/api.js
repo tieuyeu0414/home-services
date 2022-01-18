@@ -2,27 +2,34 @@ const Senquelize = require("sequelize");
 // const Op = Senquelize.Op;
 const Device = require("./models/device");
 const Customer = require('../customer/models/customer')
+const utils = require('../utils')
 
 
-async function getDataDevice(req, res){
-    try {
-        const device = await Device.findAll();
-        let data = device;
-        res.send(data)
-    } catch (e) {
-        console.log('lỗi');
-    }
-}
+
+// async function getDataDevice(req, res){
+//     try {
+//         let {page, limit} = utils.pagination(req.query, 10)
+//         const device = await Device.findAll();
+//         let data = device;
+//         res.send(data)
+//     } catch (e) {
+//         console.log('lỗi');
+//     }
+// }
 
 
 async function getDataRow(req, res){
     try {
-        const data = await Device.findAll({
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Device.findAll({
             include: [
-            {
-                model: Customer, attributes:['phone', 'name']
-            }
-        ]
+                {
+                    model: Customer, attributes:['phone', 'name']
+                }
+            ],
+            attributes: ['id', 'deviceId', 'statusDevice'],
+            offset: page,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -33,25 +40,16 @@ async function getDataRow(req, res){
     }
 }
 
-async function getDataDevice(req, res){
-    try {
-        const device = await Device.findAll();
-        let data = device;
-        res.send(data)
-    } catch (e) {
-        console.log('lỗi');
-    }
-}
 
 
 
 async function insertDevice(req, res) {
     try {
-        let { deviceId, statusDevice, customerId } = req.body;
+        let { deviceId, statusDevice, customerPhone } = req.body;
         let data = await Device.create({
             deviceId,
             statusDevice,
-            customerId
+            customerPhone
         });
         return res.status(200).json({
             data
@@ -135,23 +133,22 @@ async function updateDevice(req, res) {
 async function getFilterDevice(req, res) {
     try {
         let {search} = req.body;
-        const customer = await Device.findAll()
-        // await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             {id: search},
-        //             {phone: search},
-        //             {name: search},
-        //             {city: search},
-        //             {district: search},
-        //             {wards: search},
-        //             {detailAddress: search}
-        //         ]
-        //     }   
-        // })
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Device.findAll({
+            include: [
+                {
+                    model: Customer, attributes:['phone', 'name']
+                }
+            ],
+            attributes: ['id', 'deviceId', 'statusDevice'],
+            offset: page,
+            limit: limit
+        })
         .then(result => res.json(result.filter(item=>
             item.id === Number(search) ? item : '' ||
-            item.deviceId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
+            item.deviceId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
+            item.customer.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
+            item.customer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
         )))
         .catch(error => {
             res.status(412).json({msg: error.message});
@@ -162,7 +159,7 @@ async function getFilterDevice(req, res) {
 }
 
 module.exports = {
-    getDataDevice,
+    // getDataDevice,
     insertDevice,
     deleteDevice,
     updateDevice,

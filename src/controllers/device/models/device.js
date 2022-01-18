@@ -19,19 +19,15 @@ const Device = db.sequelize.define('device', {
         allowNull: false,
         defaultValue: "0"
     },
-    customerId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-    },
-    phoneCustomer: {
+    customerPhone: {
         type: Sequelize.STRING,
         allowNull: false,
-    }
+    },
 });
 
 Device.hasMany(Request, {foreignKey: 'deviceId', sourceKey: 'deviceId'});
 Request.belongsTo(Device, {foreignKey: 'deviceId', sourceKey: 'deviceId'})
-Customer.hasMany(Device, {foreignKey: 'customerId', sourceKey: 'id'});
-Device.belongsTo(Customer, {foreignKey: 'customerId', targetKey: 'id'});
+Customer.hasMany(Device, {foreignKey: 'customerPhone', sourceKey: 'phone'});
+Device.belongsTo(Customer, {foreignKey: 'customerPhone', targetKey: 'phone'});
 
 module.exports = Device

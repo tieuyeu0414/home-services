@@ -51,13 +51,13 @@ async function login(req, res){
 
 async function getDataStaff(req, res){
     try {
-        let {offset, limit} = utils.pagination(req.query, 10)
-        const customer = await Staff.findAll({
+        let {page, limit} = utils.pagination(req.query, 10)
+         Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 role: { [Op.notLike]: 6 }
             },
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -148,11 +148,11 @@ async function setDeleteStaff(req, res) {
 async function getFilterCityStaff(req, res) {
     try {
         let {city} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {city: city},
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -167,7 +167,7 @@ async function getFilterCityStaff(req, res) {
 async function getFilterDistrictStaff(req, res) {
     try {
         let {city, district} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
@@ -176,7 +176,7 @@ async function getFilterDistrictStaff(req, res) {
                     {district: district},
                 ]
             },
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -191,7 +191,7 @@ async function getFilterDistrictStaff(req, res) {
 async function getFilterWardsStaff(req, res) {
     try {
         let {city, district, wards} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
@@ -201,7 +201,7 @@ async function getFilterWardsStaff(req, res) {
                     {wards: wards}
                 ]
             },
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -216,10 +216,10 @@ async function getFilterWardsStaff(req, res) {
 async function getFilterStaff(req, res) {
     try {
         let {search} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result.filter(item=>

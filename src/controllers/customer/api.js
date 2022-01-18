@@ -9,19 +9,16 @@ async function getDataCustomer(req, res){
     // res.send('ok')
     try {
         // await Customer.sync({force: true})
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result)) 
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
-        // let data = customer
-        // console.log(data);
-        // res.send(data)
     } catch (e) {
         console.log('lỗi');
     }
@@ -105,11 +102,11 @@ async function setDeleteCustomer(req, res) {
 async function getFilterCityCustomer(req, res) {
     try {
         let {city} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {city: city},
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -124,7 +121,7 @@ async function getFilterCityCustomer(req, res) {
 async function getFilterDistrictCustomer(req, res) {
     try {
         let {city, district} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
@@ -133,7 +130,7 @@ async function getFilterDistrictCustomer(req, res) {
                     {district: district},
                 ]
             },
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -148,7 +145,7 @@ async function getFilterDistrictCustomer(req, res) {
 async function getFilterWardsCustomer(req, res) {
     try {
         let {city, district, wards} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
@@ -158,7 +155,7 @@ async function getFilterWardsCustomer(req, res) {
                     {wards: wards}
                 ]
             },
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result))
@@ -173,10 +170,10 @@ async function getFilterWardsCustomer(req, res) {
 async function getFilterCustomer(req, res) {
     try {
         let {search} = req.body;
-        let {offset, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
-            offset: offset,
+            offset: page,
             limit: limit
         })
         .then(result => res.json(result.filter(item=>

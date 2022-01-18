@@ -1,7 +1,7 @@
 function pagination(query, defaultSize){
     let limit = defaultSize;
-    let offset = 0 + (Number(query.offset ? query.offset : 1) - 1) * limit;
-    return {limit, offset};
+    let page = 0 + (Number(query.page ? query.page : 1) - 1) * limit;
+    return {limit, page};
 }
 
 module.exports = {
