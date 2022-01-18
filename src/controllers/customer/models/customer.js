@@ -51,5 +51,6 @@ const Customer = db.sequelize.define('customer', {
 });
 
 Customer.hasMany(Request, {foreignKey: 'phoneCustomer', sourceKey: 'phone'});
+Request.belongsTo(Customer, {foreignKey: 'phoneCustomer', sourceKey: 'phone'})
 
 module.exports = Customer

@@ -11,7 +11,6 @@ const Request = db.sequelize.define('request', {
     },
     phoneCustomer: {
         type: Sequelize.STRING,
-        unique: true,
         allowNull: false
     },
     deviceId: {

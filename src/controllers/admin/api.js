@@ -1,5 +1,6 @@
 const Staff = require('./models/staff')
 const { Op } = require("sequelize");
+const utils = require('../utils')
 
 async function login(req, res){
     // const {email, password, otp} = req.body;
@@ -50,11 +51,14 @@ async function login(req, res){
 
 async function getDataStaff(req, res){
     try {
+        let {offset, limit} = utils.pagination(req.query, 10)
         const customer = await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 role: { [Op.notLike]: 6 }
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -67,13 +71,14 @@ async function getDataStaff(req, res){
 
 async function setInsertStaff(req, res){
     try {
-        let {email, password, fullName, phoneNumber, avatar, city, district, wards, role} = req.body;
+        let {email, password, fullName, phoneNumber, staffId, avatar, city, district, wards, role} = req.body;
         await Staff.create({
             // id: 1,
             email: email,
             password: password,
             fullName: fullName,
             phoneNumber: phoneNumber,
+            staffId: staffId,
             avatar: avatar,
             city: city,
             district: district,
@@ -140,10 +145,105 @@ async function setDeleteStaff(req, res) {
     }
 }
 
+async function getFilterCityStaff(req, res) {
+    try {
+        let {city} = req.body;
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            where: {city: city},
+            offset: offset,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterDistrictStaff(req, res) {
+    try {
+        let {city, district} = req.body;
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                ]
+            },
+            offset: offset,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterWardsStaff(req, res) {
+    try {
+        let {city, district, wards} = req.body;
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                    {wards: wards}
+                ]
+            },
+            offset: offset,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterStaff(req, res) {
+    try {
+        let {search} = req.body;
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            offset: offset,
+            limit: limit
+        })
+        .then(result => res.json(result.filter(item=>
+            item.id === Number(search) ? item : '' ||
+            item.phoneNumber.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
+            item.fullName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
+            item.staffId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
+        )))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     login,
     getDataStaff,
     setInsertStaff,
     setEditStaff,
-    setDeleteStaff
+    setDeleteStaff,
+    getFilterCityStaff,
+    getFilterDistrictStaff,
+    getFilterWardsStaff,
+    getFilterStaff
 }
