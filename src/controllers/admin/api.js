@@ -1,5 +1,6 @@
 const Staff = require('./models/staff')
 const { Op } = require("sequelize");
+const utils = require('../utils')
 
 async function login(req, res){
     // const {email, password, otp} = req.body;
@@ -50,11 +51,14 @@ async function login(req, res){
 
 async function getDataStaff(req, res){
     try {
+        let {offset, limit} = utils.pagination(req.query, 10)
         const customer = await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 role: { [Op.notLike]: 6 }
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -144,9 +148,12 @@ async function setDeleteStaff(req, res) {
 async function getFilterCityStaff(req, res) {
     try {
         let {city} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
-            where: {city: city}
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            where: {city: city},
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -160,14 +167,17 @@ async function getFilterCityStaff(req, res) {
 async function getFilterDistrictStaff(req, res) {
     try {
         let {city, district} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 [Op.and]: [
                     {city: city},
                     {district: district},
                 ]
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -181,15 +191,18 @@ async function getFilterDistrictStaff(req, res) {
 async function getFilterWardsStaff(req, res) {
     try {
         let {city, district, wards} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 [Op.and]: [
                     {city: city},
                     {district: district},
                     {wards: wards}
                 ]
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -203,20 +216,12 @@ async function getFilterWardsStaff(req, res) {
 async function getFilterStaff(req, res) {
     try {
         let {search} = req.body;
-        await Staff.findAll()
-        // await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             {id: search},
-        //             {phone: search},
-        //             {name: search},
-        //             {city: search},
-        //             {district: search},
-        //             {wards: search},
-        //             {detailAddress: search}
-        //         ]
-        //     }   
-        // })
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Staff.findAll({
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            offset: offset,
+            limit: limit
+        })
         .then(result => res.json(result.filter(item=>
             item.id === Number(search) ? item : '' ||
             item.phoneNumber.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||

@@ -1,13 +1,19 @@
 const Senquelize = require("sequelize");
 const Op = Senquelize.Op;
 const Customer = require("./models/customer");
+const utils = require('../utils')
 
 async function getDataCustomer(req, res){
     // res.send('ok')
     try {
         // await Customer.sync({force: true})
-        const customer = await Customer.findAll()
-        .then(result => res.json(result))
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Customer.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            offset: offset,
+            limit: limit
+        })
+        .then(result => res.json(result)) 
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -97,9 +103,12 @@ async function setDeleteCustomer(req, res) {
 async function getFilterCityCustomer(req, res) {
     try {
         let {city} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
-            where: {city: city}
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            where: {city: city},
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -113,14 +122,17 @@ async function getFilterCityCustomer(req, res) {
 async function getFilterDistrictCustomer(req, res) {
     try {
         let {city, district} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
                 [Op.and]: [
                     {city: city},
                     {district: district},
                 ]
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -134,15 +146,18 @@ async function getFilterDistrictCustomer(req, res) {
 async function getFilterWardsCustomer(req, res) {
     try {
         let {city, district, wards} = req.body;
-    
+        let {offset, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
                 [Op.and]: [
                     {city: city},
                     {district: district},
                     {wards: wards}
                 ]
-            }
+            },
+            offset: offset,
+            limit: limit
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -156,42 +171,18 @@ async function getFilterWardsCustomer(req, res) {
 async function getFilterCustomer(req, res) {
     try {
         let {search} = req.body;
-        const customer = await Customer.findAll()
-        // await Customer.findAll({
-        //     where: {
-        //         [Op.or]: [
-        //             {id: search},
-        //             {phone: search},
-        //             {name: search},
-        //             {city: search},
-        //             {district: search},
-        //             {wards: search},
-        //             {detailAddress: search}
-        //         ]
-        //     }   
-        // })
+        let {offset, limit} = utils.pagination(req.query, 10)
+        await Customer.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            offset: offset,
+            limit: limit
+        })
         .then(result => res.json(result.filter(item=>
             item.id === Number(search) ? item : '' ||
             item.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
             item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
             item.detailAddress.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
         )))
-        .catch(error => {
-            res.status(412).json({msg: error.message});
-        });
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-async function getPagination(req, res) {
-    try {
-        let offset = req.params.offset;
-        await Customer.findAndCountAll({
-            offset: 1,
-            limit: 1
-        })
-        .then(result => res.json(result.rows))
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -209,5 +200,4 @@ module.exports = {
     getFilterDistrictCustomer,
     getFilterWardsCustomer,
     getFilterCustomer,
-    getPagination
 }
