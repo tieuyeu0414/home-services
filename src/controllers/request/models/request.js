@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
-// const Customer = require('../../customer/models/customer')
+const Customer = require('../../customer/models/customer')
+const Device = require('../../device/models/device')
 const db = require('../../base/mysql/mysql');
 const Staff = require('../../admin/models/staff')
 
@@ -9,14 +10,13 @@ const Request = db.sequelize.define('request', {
         autoIncrement: true,
         primaryKey: true
     },
-    phoneCustomer: {
+    customerPhone: {
         type: Sequelize.STRING,
         allowNull: false
     },
     deviceId: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
     services: {
         type: Sequelize.ENUM,
@@ -34,10 +34,13 @@ const Request = db.sequelize.define('request', {
     staffId: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
     },
 });
 
-// Request.belongsTo(Customer, {foreignKey: 'phoneCustomer', targetKey: 'phone'});
+
+Customer.hasMany(Request, {foreignKey: 'customerPhone', sourceKey: 'phone'});
+Request.belongsTo(Customer, {foreignKey: 'customerPhone', targetKey: 'phone'});
+Device.hasMany(Request, {foreignKey: 'deviceId', sourceKey: 'deviceId'});
+Request.belongsTo(Device, {foreignKey: 'deviceId', targetKey: 'deviceId'});
 
 module.exports = Request

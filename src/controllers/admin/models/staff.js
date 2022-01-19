@@ -124,7 +124,7 @@ Staff.sync()
         });
     });
 
-Staff.hasOne(Request, {foreignKey: 'staffId', sourceKey: 'staffId'});
+Staff.hasMany(Request, {foreignKey: 'staffId', sourceKey: 'staffId'});
 Request.belongsTo(Staff, {foreignKey: 'staffId', sourceKey: 'staffId'})
 
 module.exports = Staff

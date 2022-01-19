@@ -1,15 +1,28 @@
-const Senquelize = require("sequelize");
-// const Op = Senquelize.Op;
+const Senquelize = require("sequelize")
 const Request = require("./models/request");
+const Customer = require("../customer/models/customer");
+const Device = require("../device/models/device");
+const utils = require('../utils')
+
 
 
 async function getDataRequest(req, res){
     try {
-        const request = await Request.findAll();
-        let data = request;
-        res.send(data)
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            include: [
+                { model: Customer, attributes:['name','city', 'district','wards','detailAddress'] },
+                { model: Device, attributes:['deviceId'] },
+            ],
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
     } catch (e) {
-        console.log('lỗi');
+        console.log(e);
     }
 }
 
@@ -109,10 +122,106 @@ async function updateRequest(req, res) {
 
 
 
+async function getFilterCityRequest(req, res) {
+    try {
+        let {city} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            where: {city: city},
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterDistrictRequest(req, res) {
+    try {
+        let {city, district} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                ]
+            },
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterWardsRequest(req, res) {
+    try {
+        let {city, district, wards} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {district: district},
+                    {wards: wards}
+                ]
+            },
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterRequest(req, res) {
+    try {
+        let {search} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result.filter(item=>
+            item.id === Number(search) ? item : '' ||
+            item.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
+            item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
+            item.detailAddress.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
+        )))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+
+
 
 module.exports = {
     getDataRequest,
     insertRequest,
     deleteRequest,
-    updateRequest
+    updateRequest,
+    getFilterCityRequest,
+    getFilterDistrictRequest,
+    getFilterWardsRequest,
+    getFilterRequest,
 }

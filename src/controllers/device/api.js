@@ -20,7 +20,7 @@ const utils = require('../utils')
 
 async function getDataRow(req, res){
     try {
-        let {page, limit} = utils.pagination(req.query, 10)
+        let {page, limit} = utils.pagination(req.query, 2)
         await Device.findAll({
             include: [
                 {
