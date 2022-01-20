@@ -1,7 +1,9 @@
 const Senquelize = require("sequelize");
 const Op = Senquelize.Op;
 const Customer = require("./models/customer");
-const utils = require('../utils')
+const utils = require('../utils');
+const multer = require('multer');
+const path = require('path');
 
 
 
@@ -26,7 +28,8 @@ async function getDataCustomer(req, res){
 
 async function setInsertCustomer(req, res) {
     try {
-        let {phone, name, avatar, city, district, wards, detailAddress} = req.body;
+        let {phone, name, city, district, wards, detailAddress} = req.body;
+        let avatar = req.file.path;
         await Customer.create({
             // id: 1,
             phone: phone,
@@ -51,7 +54,8 @@ async function setEditCustomer(req, res) {
     try {
         let id = req.params.id;
         let getCustomer = await Customer.findByPk(id);
-        let {phone, name, avatar, city, district, wards, detailAddress, status} = req.body;
+        let {phone, name, city, district, wards, detailAddress, status} = req.body;
+        let avatar = req.file.path;
 
         let dataUpdate = {
             phone: !phone ? getCustomer.phone : phone,
@@ -190,6 +194,35 @@ async function getFilterCustomer(req, res) {
     }
 }
 
+
+
+//UPLOAD CONTROLLER
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb)=> {
+        cb(null, 'media/images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: '100000'},
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/
+        const mimType = fileTypes.test(file.mimetype)
+        const extname = fileTypes.test(path.extname(file.originalname))
+
+        if(mimType && extname) {
+            return cb(null, true)
+        }
+        cb('Give proper files formate to upload')
+    }
+}).single('avatar')
+
+
 module.exports = {
     getDataCustomer,
     setInsertCustomer,
@@ -199,4 +232,6 @@ module.exports = {
     getFilterDistrictCustomer,
     getFilterWardsCustomer,
     getFilterCustomer,
+    upload,
+    storage
 }

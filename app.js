@@ -34,6 +34,9 @@ app.use('/api/v1', routes)
 
 app.use('/docs', express.static('./docs'))
 
+//Static images folder
+app.use('/media/images', express.static('./media/images'))
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

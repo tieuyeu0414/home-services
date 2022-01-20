@@ -1,6 +1,9 @@
 const Staff = require('./models/staff')
 const { Op } = require("sequelize");
 const utils = require('../utils')
+const multer = require('multer');
+const path = require('path');
+
 
 async function login(req, res){
     // const {email, password, otp} = req.body;
@@ -53,7 +56,7 @@ async function getDataStaff(req, res){
     try {
         let {page, limit} = utils.pagination(req.query, 10)
          Staff.findAll({
-            attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
             where: {
                 role: { [Op.notLike]: 6 }
             },
@@ -71,9 +74,9 @@ async function getDataStaff(req, res){
 
 async function setInsertStaff(req, res){
     try {
-        let {email, password, fullName, phoneNumber, staffId, avatar, city, district, wards, role} = req.body;
+        let {email, password, fullName, phoneNumber, staffId, city, district, wards, role} = req.body;
+        let avatar = req.file.path;
         await Staff.create({
-            // id: 1,
             email: email,
             password: password,
             fullName: fullName,
@@ -83,7 +86,7 @@ async function setInsertStaff(req, res){
             city: city,
             district: district,
             wards: wards,
-            role: role,
+            role: role
         })
         .then(result => res.json(result))
         .catch(error => {
@@ -98,7 +101,8 @@ async function setEditStaff(req, res) {
     try {
         let id = req.params.id;
         let getStaff = await Staff.findByPk(id);
-        let {fullName, phoneNumber, avatar, city, district, wards, role} = req.body;
+        let {fullName, phoneNumber, city, district, wards, role, isActive} = req.body;
+        let avatar = req.file.path;
 
         let dataUpdate = {
             fullName: !fullName ? getStaff.fullName : fullName,
@@ -108,6 +112,7 @@ async function setEditStaff(req, res) {
             district: !district ? getStaff.district : district,
             wards: !wards ? getStaff.wards : wards,
             role: !role ? getStaff.role : role,
+            isActive: !isActive ? getStaff.isActive : isActive,
         };
         await Staff.update({...dataUpdate},
             {
@@ -236,6 +241,32 @@ async function getFilterStaff(req, res) {
     }
 }
 
+//UPLOAD CONTROLLER
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb)=> {
+        cb(null, 'media/images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: {fileSize: '100000'},
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/
+        const mimType = fileTypes.test(file.mimetype)
+        const extname = fileTypes.test(path.extname(file.originalname))
+
+        if(mimType && extname) {
+            return cb(null, true)
+        }
+        cb('Give proper files formate to upload')
+    }
+}).single('avatar')
+
 module.exports = {
     login,
     getDataStaff,
@@ -245,5 +276,7 @@ module.exports = {
     getFilterCityStaff,
     getFilterDistrictStaff,
     getFilterWardsStaff,
-    getFilterStaff
+    getFilterStaff,
+    upload,
+    storage
 }

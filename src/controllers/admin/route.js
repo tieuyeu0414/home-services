@@ -4,8 +4,8 @@ const route = express();
 const adminAPI = require('./api')
 route.get('/staff', adminAPI.getDataStaff);
 route.post('/login', adminAPI.login);
-route.post('/staff/insert', adminAPI.setInsertStaff);
-route.put('/staff/edit/:id', adminAPI.setEditStaff);
+route.post('/staff/insert',adminAPI.upload , adminAPI.setInsertStaff);
+route.put('/staff/edit/:id',adminAPI.upload , adminAPI.setEditStaff);
 route.delete('/staff/delete/:id', adminAPI.setDeleteStaff);
 route.get('/staff/city', adminAPI.getFilterCityStaff);
 route.get('/staff/district', adminAPI.getFilterDistrictStaff);
