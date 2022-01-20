@@ -9,7 +9,7 @@ const utils = require('../utils')
 async function getDataRow(req, res){
     try {
         let {page, limit} = utils.pagination(req.query, 10)
-        await Device.findAll({
+        await Device.findAndCountAll({
             include: [
                 {
                     model: Customer, attributes:['phone', 'name']
@@ -122,7 +122,7 @@ async function getFilterDevice(req, res) {
     try {
         let {search} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Device.findAll({
+        await Device.findAndCountAll({
             include: [
                 {
                     model: Customer, 

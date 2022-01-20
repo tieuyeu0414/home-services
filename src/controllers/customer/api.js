@@ -13,7 +13,7 @@ async function getDataCustomer(req, res){
     try {
         // await Customer.sync({force: true})
         let {page, limit} = utils.pagination(req.query, 10)
-        await Customer.findAll({
+        await Customer.findAndCountAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             offset: page,
             limit: limit
@@ -108,7 +108,7 @@ async function getFilterCityCustomer(req, res) {
     try {
         let {city} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Customer.findAll({
+        await Customer.findAndCountAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {city: city},
             offset: page,
@@ -127,7 +127,7 @@ async function getFilterDistrictCustomer(req, res) {
     try {
         let {city, district} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Customer.findAll({
+        await Customer.findAndCountAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
                 [Op.and]: [
@@ -151,7 +151,7 @@ async function getFilterWardsCustomer(req, res) {
     try {
         let {city, district, wards} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Customer.findAll({
+        await Customer.findAndCountAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
                 [Op.and]: [
@@ -176,7 +176,7 @@ async function getFilterCustomer(req, res) {
     try {
         let {search} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Customer.findAll({
+        await Customer.findAndCountAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
             where: {
                 [Op.or]: [

@@ -55,7 +55,7 @@ async function login(req, res){
 async function getDataStaff(req, res){
     try {
         let {page, limit} = utils.pagination(req.query, 10)
-         Staff.findAll({
+         Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
             where: {
                 role: { [Op.notLike]: 6 }
@@ -154,7 +154,7 @@ async function getFilterCityStaff(req, res) {
     try {
         let {city} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Staff.findAll({
+        await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {city: city},
             offset: page,
@@ -173,7 +173,7 @@ async function getFilterDistrictStaff(req, res) {
     try {
         let {city, district} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Staff.findAll({
+        await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 [Op.and]: [
@@ -197,7 +197,7 @@ async function getFilterWardsStaff(req, res) {
     try {
         let {city, district, wards} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Staff.findAll({
+        await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 [Op.and]: [
@@ -222,7 +222,7 @@ async function getFilterStaff(req, res) {
     try {
         let {search} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Staff.findAll({
+        await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
                 [Op.or]: [

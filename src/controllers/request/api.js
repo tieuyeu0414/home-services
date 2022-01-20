@@ -11,7 +11,7 @@ const Staff = require("../admin/models/staff");
 async function getDataRequest(req, res){
     try {
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { model: Customer, attributes:['name','city', 'district','wards','detailAddress'] },
                 { model: Device, attributes:['deviceId'] },
@@ -130,7 +130,7 @@ async function getFilterCityRequest(req, res) {
     try {
         let {city} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
@@ -157,7 +157,7 @@ async function getFilterDistrictRequest(req, res) {
     try {
         let {city, district} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
@@ -189,7 +189,7 @@ async function getFilterWardsRequest(req, res) {
     try {
         let {city, district, wards} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
@@ -222,7 +222,7 @@ async function getFilterRequest(req, res) {
     try {
         let {search} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
@@ -259,7 +259,7 @@ async function getFilterStatusRequest(req, res) {
     try {
         let {status} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
@@ -288,7 +288,7 @@ async function getFilterServicesRequest(req, res) {
     try {
         let {services} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAll({
+        await Request.findAndCountAll({
             include: [
                 { 
                     model: Customer, 
