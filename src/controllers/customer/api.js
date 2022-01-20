@@ -4,6 +4,7 @@ const Customer = require("./models/customer");
 const utils = require('../utils');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 
 
@@ -203,7 +204,9 @@ async function getFilterCustomer(req, res) {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb)=> {
-        cb(null, 'media/images')
+        const path = 'media/images'
+        fs.mkdirSync(path, { recursive: true })
+        return cb(null, path)
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname))

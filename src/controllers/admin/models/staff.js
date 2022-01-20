@@ -41,7 +41,10 @@ const Staff = db.sequelize.define('staff', {
         allowNull: false,
         unique: true
     },
-    avatar: Sequelize.STRING,
+    avatar: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     city: {
         type: Sequelize.STRING,
         allowNull: false
