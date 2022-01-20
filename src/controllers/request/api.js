@@ -258,7 +258,7 @@ async function getFilterRequest(req, res) {
 async function getFilterStatusRequest(req, res) {
     try {
         let {status} = req.body;
-        let {page, limit} = utils.pagination(req.query, 2)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Request.findAll({
             include: [
                 { 
@@ -284,6 +284,35 @@ async function getFilterStatusRequest(req, res) {
     }
 }
 
+async function getFilterServicesRequest(req, res) {
+    try {
+        let {services} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAll({
+            include: [
+                { 
+                    model: Customer, 
+                    attributes:['name','city', 'district','wards','detailAddress'],
+                },
+                { model: Device, attributes:['deviceId'] },
+                { model: Staff, attributes:['staffId'] },
+            ],
+            attributes:['id','services', 'note','status', 'customerPhone'],
+            where: {
+                services: services
+            },
+            offset: page,
+            limit: limit
+        })
+        .then(result => res.json(result))
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 
 module.exports = {
     getDataRequest,
@@ -294,5 +323,6 @@ module.exports = {
     getFilterDistrictRequest,
     getFilterWardsRequest,
     getFilterRequest,
-    getFilterStatusRequest
+    getFilterStatusRequest,
+    getFilterServicesRequest
 }
