@@ -2,7 +2,6 @@ const Sequelize = require("sequelize");
 const bcrypt = require('bcrypt');
 const db = require('../../base/mysql/mysql');
 const config = require('../../../../config/config').admin;
-const Request = require('../../request/models/request')
 
 const Staff = db.sequelize.define('staff', {
     id: {
@@ -124,7 +123,5 @@ Staff.sync()
         });
     });
 
-Staff.hasMany(Request, {foreignKey: 'staffId', sourceKey: 'staffId'});
-Request.belongsTo(Staff, {foreignKey: 'staffId', sourceKey: 'staffId'})
 
 module.exports = Staff

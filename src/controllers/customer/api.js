@@ -173,15 +173,18 @@ async function getFilterCustomer(req, res) {
         let {page, limit} = utils.pagination(req.query, 10)
         await Customer.findAll({
             attributes: ['id', 'phone', 'name', 'avatar', 'city', 'district', 'wards', 'detailAddress'],
+            where: {
+                [Op.or]: [
+                    {id: {[Op.substring]: search}},
+                    {phone: {[Op.substring]: search}},
+                    {name: {[Op.substring]: search}},
+                    {detailAddress: {[Op.substring]: search}},
+                ]
+            },
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result.filter(item=>
-            item.id === Number(search) ? item : '' ||
-            item.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
-            item.detailAddress.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
-        )))
+        .then(result => res.json(result))
         .catch(error => {
             res.status(412).json({msg: error.message});
         });

@@ -219,15 +219,19 @@ async function getFilterStaff(req, res) {
         let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
+            where: {
+                [Op.or]: [
+                    {id: {[Op.substring]: search}},
+                    {fullName: {[Op.substring]: search}},
+                    {phoneNumber: {[Op.substring]: search}},
+                    {staffId: {[Op.substring]: search}},
+                    {role: {[Op.substring]: search}},
+                ]
+            },
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result.filter(item=>
-            item.id === Number(search) ? item : '' ||
-            item.phoneNumber.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.fullName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' || 
-            item.staffId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
-        )))
+        .then(result => res.json(result))
         .catch(error => {
             res.status(412).json({msg: error.message});
         });

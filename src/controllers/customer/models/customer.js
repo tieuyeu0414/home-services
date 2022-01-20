@@ -1,5 +1,4 @@
 const Sequelize = require("sequelize");
-const Request = require('../../request/models/request')
 const db = require('../../base/mysql/mysql');
 
 const Customer = db.sequelize.define('customer', {
