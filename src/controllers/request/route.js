@@ -11,5 +11,7 @@ route.get('/district', requestAPI.getFilterDistrictRequest)
 route.get('/wards', requestAPI.getFilterWardsRequest)
 route.get('/search', requestAPI.getFilterRequest)
 route.get('/status', requestAPI.getFilterStatusRequest)
+route.get('/services', requestAPI.getFilterServicesRequest)
+
 
 module.exports = route;
