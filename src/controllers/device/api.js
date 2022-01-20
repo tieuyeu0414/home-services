@@ -1,5 +1,5 @@
 const Senquelize = require("sequelize");
-// const Op = Senquelize.Op;
+const Op = Senquelize.Op;
 const Device = require("./models/device");
 const Customer = require('../customer/models/customer')
 const utils = require('../utils')
@@ -20,7 +20,7 @@ const utils = require('../utils')
 
 async function getDataRow(req, res){
     try {
-        let {page, limit} = utils.pagination(req.query, 2)
+        let {page, limit} = utils.pagination(req.query, 10)
         await Device.findAll({
             include: [
                 {
@@ -137,19 +137,30 @@ async function getFilterDevice(req, res) {
         await Device.findAll({
             include: [
                 {
-                    model: Customer, attributes:['phone', 'name']
-                }
+                    model: Customer, 
+                    attributes:['phone', 'name'],
+                    // where: {
+                    //     [Op.or]: [
+                    //         {phone: {[Op.substring]: search}},
+                    //         {name: {[Op.substring]: search}},
+                    //     ]
+
+                    // }
+                },
             ],
             attributes: ['id', 'deviceId', 'statusDevice'],
+            where: {
+                [Op.or]: [
+                    {id: {[Op.substring]: search}},
+                    {deviceId: {[Op.substring]: search}},
+                    {'$Customer.phone$': { [Op.substring]: search }},
+                    {'$Customer.name$': { [Op.substring]: search }}
+                ]
+            },
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result.filter(item=>
-            item.id === Number(search) ? item : '' ||
-            item.deviceId.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.customer.phone.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : '' ||
-            item.customer.name.toLowerCase().indexOf(search.toLowerCase()) !== -1 ? item : ''
-        )))
+        .then(result => res.json(result))
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
