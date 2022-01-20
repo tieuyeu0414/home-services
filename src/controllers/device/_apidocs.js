@@ -101,3 +101,27 @@
  *     }
  */
 
+
+/**
+ * @api {get} api/v1/device/search Search Device
+ * @apiName SearchDevice
+ * @apiGroup Devices
+ *
+ * @apiSuccess {String} deviceId  deviceId of Device.
+ * @apiSuccess {Enum} statusDevice  StatusDevice of Device.
+ * @apiSuccess {Integer} customerId  CustomerId of the Customer who has this device.
+ * 
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ * [
+ *  {
+ *   "id": 1,
+ *   "deviceId": 1,
+ *   "statusDevice": "1",
+ *   "customerId": "1",
+ *   "updateAt": "2022-01-14T06:48:05.159Z",
+ *   "createAt": "2022-01-14T06:48:05.159Z",
+ *  }
+ * ]
+ * 
+ */

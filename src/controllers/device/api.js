@@ -6,18 +6,6 @@ const utils = require('../utils')
 
 
 
-// async function getDataDevice(req, res){
-//     try {
-//         let {page, limit} = utils.pagination(req.query, 10)
-//         const device = await Device.findAll();
-//         let data = device;
-//         res.send(data)
-//     } catch (e) {
-//         console.log('lỗi');
-//     }
-// }
-
-
 async function getDataRow(req, res){
     try {
         let {page, limit} = utils.pagination(req.query, 10)

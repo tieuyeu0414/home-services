@@ -7,7 +7,6 @@ const fs = require('fs');
 
 
 async function login(req, res){
-    // const {email, password, otp} = req.body;
     const {email, password} = req.body;
     try {
         if (!email || !password)
