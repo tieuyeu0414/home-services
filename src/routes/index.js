@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express();
+const auth = require('../controllers/auth/login')
 
 const admin = require('../controllers/admin/route')
-router.use('/admin', admin)
+router.use('/admin',auth.checkLogin, admin)
 
 const customer = require('../controllers/customer/route')
-router.use('/customer', customer)
+router.use('/customer',auth.checkLogin,auth.checkRoleAdmin, customer)
 
 const device = require('../controllers/device/route')
-router.use('/device', device)
+router.use('/device',auth.checkLogin, device)
 
 const request = require('../controllers/request/route')
-router.use('/request', request)
+router.use('/request',auth.checkLogin, request)
 
-// const service = require('../controllers/service/route')
-// router.use('/service', service)
+const login = require('../controllers/auth/route')
+router.use('/login', login)
 
 
 module.exports = router;
