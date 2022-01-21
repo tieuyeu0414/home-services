@@ -19,10 +19,7 @@ async function login(req, res){
             res.send('Wrong email or password');
         await Staff.findOne({
             where: {
-                [Op.and] : [
-                    {email: email},
-                    {password: password}
-                ]
+                email
             },
         })
         .then(result => res.json(result))
