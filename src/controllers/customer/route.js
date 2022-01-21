@@ -10,6 +10,6 @@ route.post('/city', customerAPI.getFilterCityCustomer)
 route.post('/district', customerAPI.getFilterDistrictCustomer)
 route.post('/wards', customerAPI.getFilterWardsCustomer)
 route.post('/search', customerAPI.getFilterCustomer)
-route.post('/', customerAPI.getDataCustomer)
+route.get('/', customerAPI.getDataCustomer)
 
 module.exports = route;

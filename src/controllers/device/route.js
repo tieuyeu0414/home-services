@@ -8,6 +8,6 @@ route.put('/edit/:id', deviceAPI.updateDevice);
 route.delete('/delete/:id', deviceAPI.deleteDevice);
 route.post('/search', deviceAPI.getFilterDevice);
 // route.get('/getDevice', deviceAPI.getDataDevice);
-route.post('/', deviceAPI.getDataRow);
+route.get('/', deviceAPI.getDataRow);
 
 module.exports = route;
