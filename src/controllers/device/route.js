@@ -6,8 +6,8 @@ const deviceAPI = require('./api')
 route.post('/insert', deviceAPI.insertDevice);
 route.put('/edit/:id', deviceAPI.updateDevice);
 route.delete('/delete/:id', deviceAPI.deleteDevice);
-route.get('/search', deviceAPI.getFilterDevice);
+route.post('/search', deviceAPI.getFilterDevice);
 // route.get('/getDevice', deviceAPI.getDataDevice);
-route.get('/', deviceAPI.getDataRow);
+route.post('/', deviceAPI.getDataRow);
 
 module.exports = route;
