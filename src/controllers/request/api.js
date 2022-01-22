@@ -286,7 +286,7 @@ async function getFilterStatusRequest(req, res) {
 
 async function getFilterServicesRequest(req, res) {
     try {
-        let {services} = req.body;
+        let services = req.params.num;
         let {page, limit} = utils.pagination(req.query, 10)
         await Request.findAndCountAll({
             include: [

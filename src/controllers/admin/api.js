@@ -15,17 +15,19 @@ async function login(req, res){
         let staff = await Staff.findOne({
             where: {email},
         });
-        if (!staff || !staff.comparePassword(password))
+        if (!staff || !staff.comparePassword(password)){
             res.send('Wrong email or password');
-        await Staff.findOne({
-            where: {
-                email
-            },
-        })
-        .then(result => res.json(result))
-        .catch(error => {
-            res.status(412).json({msg: error.message});
-        });
+        }  
+        else{
+            await Staff.findOne({
+                attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
+                where: {email},
+            })
+            .then(result => res.json(result))
+            .catch(error => {
+                res.status(412).json({msg: error.message});
+            });
+        }
     } catch (error) {
         console.log(error);
     }
