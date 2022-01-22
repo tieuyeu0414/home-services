@@ -73,9 +73,61 @@ async function checkRoleAdmin(req, res, next){
 }
 
 
+async function checkRoleDh(req, res, next){
+    const role = req.data.role;
+    if( role === '1'|| role === '6') {
+        next()
+    } else {
+        res.json('NOT PERMISSION');
+    }
+}
+
+async function checkRoleMnl(req, res, next){
+    const role = req.data.role;
+    if( role === '2'|| role === '6') {
+        next()
+    } else {
+        res.json('NOT PERMISSION');
+    }
+}
+
+async function checkRoleTl(req, res, next){
+    const role = req.data.role;
+    if( role === '3'|| role === '6') {
+        next()
+    } else {
+        res.json('NOT PERMISSION');
+    }
+}
+
+async function checkRoleBnl(req, res, next){
+    const role = req.data.role;
+    if( role === '4'|| role === '6') {
+        next()
+    } else {
+        res.json('NOT PERMISSION');
+    }
+}
+
+async function checkRoleDv(req, res, next){
+    const role = req.data.role;
+    if( role === '4' || role === '6') {
+        next()
+    } else {
+        res.json('NOT PERMISSION');
+    }
+}
+
+
+
 
 module.exports = {
     login,
     checkLogin,
-    checkRoleAdmin
+    checkRoleAdmin,
+    checkRoleDv,
+    checkRoleBnl,
+    checkRoleTl,
+    checkRoleMnl,
+    checkRoleDh
 }

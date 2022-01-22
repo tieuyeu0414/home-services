@@ -16,8 +16,9 @@ router.use('/request',auth.checkLogin, request)
 
 const login = require('../controllers/auth/route')
 router.use('/login', login)
+
 const services = require('../controllers/services/route')
-router.use('/services', services)
+router.use('/services', auth.checkLogin, services)
 
 
 module.exports = router;
