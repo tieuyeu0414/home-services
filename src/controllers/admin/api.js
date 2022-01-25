@@ -57,6 +57,7 @@ async function setInsertStaff(req, res){
     try {
         let {email, password, fullName, phoneNumber, staffId, city, district, wards, role} = req.body;
         let avatar = req.file.path;
+        console.log(avatar);
         await Staff.create({
             email: email,
             password: password,
