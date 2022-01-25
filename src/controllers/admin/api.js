@@ -6,32 +6,6 @@ const path = require('path');
 const fs = require('fs');
 
 
-async function login(req, res){
-    const {email, password} = req.body;
-    try {
-        if (!email || !password)
-            res.send('email and password are required');
-
-        let staff = await Staff.findOne({
-            where: {email},
-        });
-        if (!staff || !staff.comparePassword(password)){
-            res.send('Wrong email or password');
-        }  
-        else{
-            await Staff.findOne({
-                attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
-                where: {email},
-            })
-            .then(result => res.json(result))
-            .catch(error => {
-                res.status(412).json({msg: error.message});
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 async function getDataStaff(req, res){
     try {
@@ -255,7 +229,6 @@ const upload = multer({
 }).single('avatar')
 
 module.exports = {
-    login,
     getDataStaff,
     setInsertStaff,
     setEditStaff,
@@ -264,6 +237,5 @@ module.exports = {
     getFilterDistrictStaff,
     getFilterWardsStaff,
     getFilterStaff,
-    upload,
-    storage
+    upload
 }
