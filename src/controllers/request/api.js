@@ -21,7 +21,26 @@ async function getDataRequest(req, res){
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -34,17 +53,26 @@ async function getDataRequest(req, res){
 
 async function insertRequest(req, res) {
     try {
-        let { customerId, deviceId, serviceId, note, status, staffId } = req.body;
+        let { customerPhone, deviceId, services, note, status, staffId } = req.body;
         let data = await Request.create({
-            customerId,
+            customerPhone,
             deviceId,
-            serviceId,
+            services,
             note,
             status,
             staffId
         });
+        let subdata =  await Customer.findAll(
+            {
+                where: {
+                    phone:customerPhone
+                },
+                attributes:['city','district','wards','name'],
+            }
+            
+        );
         return res.status(200).json({
-            data
+            data:{...data.dataValues,name:subdata[0].name,city:subdata[0].city,district:subdata[0].district,wards:subdata[0].wards}
         })
     } catch (error) {
         console.log(error);
@@ -90,7 +118,7 @@ async function deleteRequest(req, res) {
 
 async function updateRequest(req, res) {
     let id = req.params.id;
-    let { customerId, deviceId, serviceId, note, status, staffId } = req.body;
+    let { customerPhone, deviceId, services, note, status, staffId } = req.body;
     let request =  await Request.findAll(
         {
             where: {
@@ -105,12 +133,12 @@ async function updateRequest(req, res) {
     }
     try {
         await Request.update({ 
-            customerId,
+            customerPhone,
             deviceId,
-            serviceId,
+            services,
             note,
             status,
-            staffId
+            staffId,
          }, {
             where: {
                 id: id
@@ -144,7 +172,26 @@ async function getFilterCityRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result => {
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -176,7 +223,26 @@ async function getFilterDistrictRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -209,7 +275,26 @@ async function getFilterWardsRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result => {
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -246,7 +331,26 @@ async function getFilterRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result => {
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -258,6 +362,7 @@ async function getFilterRequest(req, res) {
 async function getFilterStatusRequest(req, res) {
     try {
         let {status} = req.body;
+        console
         let {page, limit} = utils.pagination(req.query, 10)
         await Request.findAndCountAll({
             include: [
@@ -275,7 +380,24 @@ async function getFilterStatusRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -304,7 +426,24 @@ async function getFilterServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });

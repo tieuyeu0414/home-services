@@ -19,7 +19,16 @@ async function getDataRow(req, res){
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result => {
+             const rows = result.rows.map(item=>{
+                 return {id: item.id,
+                    deviceId:item.deviceId,
+                    statusDevice:item.statusDevice,
+                    customerPhone:item.customer.phone,
+                    customerName:item.customer.name}
+             })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -39,8 +48,17 @@ async function insertDevice(req, res) {
             statusDevice,
             customerPhone
         });
+        let subdata =  await Customer.findAll(
+            {
+                where: {
+                    phone:customerPhone
+                },
+                attributes:['name'],
+            }
+            
+        );
         return res.status(200).json({
-            data
+            data:{...data.dataValues,customerName:subdata[0].name}
         })
     } catch (error) {
         console.log(error);
@@ -86,7 +104,7 @@ async function deleteDevice(req, res) {
 
 async function updateDevice(req, res) {
     let id = req.params.id;
-    let { deviceId, statusDevice, customerId } = req.body;
+    let { deviceId, statusDevice, customerPhone } = req.body;
     let device =  await Device.findAll(
         {
             where: {
@@ -103,7 +121,7 @@ async function updateDevice(req, res) {
         await Device.update({ 
             deviceId,
             statusDevice,
-            customerId
+            customerPhone
          }, {
             where: {
                 id: id
@@ -148,7 +166,12 @@ async function getFilterDevice(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result => {
+            const rows = result.rows.map(item=>{
+                return {id: item.id,deviceId:item.deviceId,statusDevice:item.statusDevice,customerPhone:item.customer.phone,customerName:item.customer.name}
+            })
+           res.json({rows,count:result.count})
+       })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });

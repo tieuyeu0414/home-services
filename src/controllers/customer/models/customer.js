@@ -8,7 +8,7 @@ const Customer = db.sequelize.define('customer', {
         primaryKey: true
     },
     phone: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
         unique: true
     },

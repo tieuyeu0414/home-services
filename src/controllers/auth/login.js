@@ -42,7 +42,7 @@ async function login(req, res){
 
 async function checkLogin(req, res, next){
     try {
-        let token = req.cookies.token;
+        let token = req.headers["x-access-token"]
         var equals = jwt.verify(token, 'longlong');
         Staff.findOne({
             where: {
