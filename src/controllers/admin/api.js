@@ -39,7 +39,7 @@ async function getDataStaff(req, res){
          Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
             where: {
-                role: { [Op.notLike]: 6 }
+                role: { [Op.not]: [6] }
             },
             offset: page,
             limit: limit
@@ -55,8 +55,8 @@ async function getDataStaff(req, res){
 
 async function setInsertStaff(req, res){
     try {
-        let {email, password, fullName, phoneNumber, staffId, city, district, wards, role} = req.body;
-        let avatar = req.file.path;
+        let {email, password, fullName, phoneNumber, staffId, city, district, wards, role,avatar} = req.body;
+        //let avatar = req.file.path;
         await Staff.create({
             email: email,
             password: password,
@@ -82,8 +82,8 @@ async function setEditStaff(req, res) {
     try {
         let id = req.params.id;
         let getStaff = await Staff.findByPk(id);
-        let {fullName, phoneNumber, city, district, wards, role, isActive} = req.body;
-        let avatar = req.file.path;
+        let {fullName, phoneNumber, city, district, wards, role, isActive,avatar} = req.body;
+        //let avatar = req.file.path;
 
         let dataUpdate = {
             fullName: !fullName ? getStaff.fullName : fullName,

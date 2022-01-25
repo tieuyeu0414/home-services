@@ -29,8 +29,8 @@ async function getDataCustomer(req, res){
 
 async function setInsertCustomer(req, res) {
     try {
-        let {phone, name, city, district, wards, detailAddress} = req.body;
-        let avatar = req.file.path;
+        let {phone, name, city, district, wards, detailAddress,avatar} = req.body;
+       // let avatar = req.file.path;
         await Customer.create({
             // id: 1,
             phone: phone,
@@ -55,8 +55,8 @@ async function setEditCustomer(req, res) {
     try {
         let id = req.params.id;
         let getCustomer = await Customer.findByPk(id);
-        let {phone, name, city, district, wards, detailAddress, status} = req.body;
-        let avatar = req.file.path;
+        let {phone, name, city, district, wards, detailAddress, status,avatar} = req.body;
+       //let avatar = req.file.path;
 
         let dataUpdate = {
             phone: !phone ? getCustomer.phone : phone,
