@@ -4,7 +4,6 @@ const Customer = require("../customer/models/customer");
 const Device = require("../device/models/device");
 const Request = require("../request/models/request");
 const utils = require('../utils');
-// const Op = Senquelize.Op;
 
 async function getDhServicesRequest(req, res) {
     try {
@@ -152,10 +151,12 @@ async function getDvServicesRequest(req, res) {
 }
 
 
+
+
 module.exports = {
     getDhServicesRequest,
     getMlnServicesRequest,
     getTlServicesRequest,
     getBnlServicesRequest,
-    getDvServicesRequest
+    getDvServicesRequest,
 }

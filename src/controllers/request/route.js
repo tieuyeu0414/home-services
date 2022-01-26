@@ -11,7 +11,7 @@ route.post('/district', requestAPI.getFilterDistrictRequest)
 route.post('/wards', requestAPI.getFilterWardsRequest)
 route.post('/search', requestAPI.getFilterRequest)
 route.post('/status', requestAPI.getFilterStatusRequest)
-route.post('/services/:num/:slug', requestAPI.getFilterServicesRequest)
+// route.post('/services/:num/:slug', requestAPI.getFilterServicesRequest)
 
 
 module.exports = route;

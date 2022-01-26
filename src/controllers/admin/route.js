@@ -3,7 +3,7 @@ const route = express();
 
 const adminAPI = require('./api')
 route.get('/staff', adminAPI.getDataStaff);
-route.post('/login', adminAPI.login);
+// route.post('/login', adminAPI.login);
 route.post('/staff/insert',adminAPI.upload , adminAPI.setInsertStaff);
 route.put('/staff/edit/:id',adminAPI.upload , adminAPI.setEditStaff);
 route.delete('/staff/delete/:id', adminAPI.setDeleteStaff);

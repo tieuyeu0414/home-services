@@ -3,16 +3,16 @@ const router = express();
 const auth = require('../controllers/auth/login')
 
 const admin = require('../controllers/admin/route')
-router.use('/admin',auth.checkLogin, admin)
+router.use('/admin',auth.checkLogin,auth.checkRoleAdmin, admin)
 
 const customer = require('../controllers/customer/route')
 router.use('/customer',auth.checkLogin,auth.checkRoleAdmin, customer)
 
 const device = require('../controllers/device/route')
-router.use('/device',auth.checkLogin, device)
+router.use('/device',auth.checkLogin,auth.checkRoleAdmin, device)
 
 const request = require('../controllers/request/route')
-router.use('/request',auth.checkLogin, request)
+router.use('/request',auth.checkLogin,auth.checkRoleAdmin, request)
 
 const login = require('../controllers/auth/route')
 router.use('/login', login)
