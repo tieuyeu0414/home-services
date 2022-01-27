@@ -4,7 +4,6 @@ const Customer = require("../customer/models/customer");
 const Device = require("../device/models/device");
 const Request = require("../request/models/request");
 const utils = require('../utils');
-// const Op = Senquelize.Op;
 
 async function getDhServicesRequest(req, res) {
     try {
@@ -26,7 +25,24 @@ async function getDhServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -55,7 +71,24 @@ async function getMlnServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -84,7 +117,24 @@ async function getTlServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -113,7 +163,24 @@ async function getBnlServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -142,7 +209,24 @@ async function getDvServicesRequest(req, res) {
             offset: page,
             limit: limit
         })
-        .then(result => res.json(result))
+        .then(result =>{
+            rows= result.rows.map((item)=>{
+                return {id:item.id,customerPhone:item.customerPhone,
+                services:item.services,
+                note:item.note,
+                deviceId:item.device.deviceId,
+                name:item.customer.name,
+                city:item.customer.city,
+                district:item.customer.district,
+                wards:item.customer.wards,
+                staffId:item.staff.staffId,
+                services:item.services,
+                status:item.status,
+                detailAddress:item.customer.detailAddress
+                }
+            })
+            res.json({rows,count:result.count})
+        })
         .catch(error => {
             res.status(412).json({msg: error.message});
         });
@@ -152,10 +236,12 @@ async function getDvServicesRequest(req, res) {
 }
 
 
+
+
 module.exports = {
     getDhServicesRequest,
     getMlnServicesRequest,
     getTlServicesRequest,
     getBnlServicesRequest,
-    getDvServicesRequest
+    getDvServicesRequest,
 }

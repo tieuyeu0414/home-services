@@ -42,7 +42,7 @@ async function login(req, res){
 
 async function checkLogin(req, res, next){
     try {
-        let token = req.cookies.token;
+        let token = req.headers["x-access-token"]
         var equals = jwt.verify(token, 'longlong');
         Staff.findOne({
             where: {
@@ -111,7 +111,7 @@ async function checkRoleBnl(req, res, next){
 
 async function checkRoleDv(req, res, next){
     const role = req.data.role;
-    if( role === '4' || role === '6') {
+    if( role === '5' || role === '6') {
         next()
     } else {
         res.json('NOT PERMISSION');
@@ -129,5 +129,6 @@ module.exports = {
     checkRoleBnl,
     checkRoleTl,
     checkRoleMnl,
-    checkRoleDh
+    checkRoleDh,
+
 }

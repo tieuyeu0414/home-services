@@ -1,162 +1,13 @@
 const Senquelize = require("sequelize");
-const Op = Senquelize.Op;
-const Request = require("./models/request");
+const Staff = require("../admin/models/staff");
 const Customer = require("../customer/models/customer");
 const Device = require("../device/models/device");
+const Request = require("../request/models/request");
 const utils = require('../utils');
-const Staff = require("../admin/models/staff");
+const Op = Senquelize.Op;
+const auth = require('../auth/login')
 
-
-
-
-async function getDataRequest(req, res){
-    try {
-        let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAndCountAll({
-            include: [
-                { model: Customer, attributes:['name','city', 'district','wards','detailAddress'] },
-                { model: Device, attributes:['deviceId'] },
-                { model: Staff, attributes:['staffId'] },
-            ],
-            attributes:['id','services', 'note','status', 'customerPhone'],
-            
-            offset: page,
-            limit: limit
-        })
-        .then(result =>{
-            {
-                rows= result.rows.map((item)=>{
-                     return {id:item.id,customerPhone:item.customerPhone,
-                     services:item.services,
-                     note:item.note,
-                     deviceId:item.device.deviceId,
-                     name:item.customer.name,
-                     city:item.customer.city,
-                     district:item.customer.district,
-                     wards:item.customer.wards,
-                     staffId:item.staff.staffId,
-                     services:item.services,
-                     status:item.status,
-                     detailAddress:item.customer.detailAddress
-                     }
-                 })
-             }
-             res.json({rows,count:result.count})
-        })
-        .catch(error => {
-            res.status(412).json({msg: error.message});
-        });
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-
-
-async function insertRequest(req, res) {
-    try {
-        let { customerPhone, deviceId, services, note, status, staffId } = req.body;
-        let data = await Request.create({
-            customerPhone,
-            deviceId,
-            services,
-            note,
-            status,
-            staffId
-        });
-        let subdata =  await Customer.findAll(
-            {
-                where: {
-                    phone:customerPhone
-                },
-                attributes:['city','district','wards','name'],
-            }
-            
-        );
-        return res.status(200).json({
-            data:{...data.dataValues,name:subdata[0].name,city:subdata[0].city,district:subdata[0].district,wards:subdata[0].wards}
-        })
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-
-
-async function deleteRequest(req, res) {
-    let id = req.params.id;
-    let request =  await Request.findAll(
-        {
-            where: {
-                id: id
-            },
-        }
-    );
-        
-    if(request.length == 0) {
-        return res.status(200).json({
-            errorMessage:`The request isn't exist!`
-        })
-    }
-    
-    try {
-        await Request.destroy(
-            {
-                where: {
-                    id: id
-                },
-                returning: true
-            });
-        return res.status(200).json({
-            message:"Delete success!"
-        })
-    } catch (e) {
-        console.log(e);
-    }
-    
-}
-
-
-async function updateRequest(req, res) {
-    let id = req.params.id;
-    let { customerPhone, deviceId, services, note, status, staffId } = req.body;
-    let request =  await Request.findAll(
-        {
-            where: {
-                id: id
-            },
-        }
-    );
-    if(request.length == 0) {
-        return res.status(200).json({
-            errorMessage:`The request isn't exist!`
-        })
-    }
-    try {
-        await Request.update({ 
-            customerPhone,
-            deviceId,
-            services,
-            note,
-            status,
-            staffId,
-         }, {
-            where: {
-                id: id
-            }
-        });
-        return res.status(200).json({
-            message:"Update success!"
-        })
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-
-async function getFilterCityRequest(req, res) {
+async function getFilterCityServicesBnl(req, res) {
     try {
         let {city} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
@@ -172,6 +23,7 @@ async function getFilterCityRequest(req, res) {
             where: {
                 [Op.and]: [
                     {'$Customer.city$': city},
+                    {services: 4}
                 ]
             },
             attributes:['id','services', 'note','status', 'customerPhone'],
@@ -206,7 +58,8 @@ async function getFilterCityRequest(req, res) {
     }
 }
 
-async function getFilterDistrictRequest(req, res) {
+
+async function getFilterDistrictServicesBnl(req, res) {
     try {
         let {city, district} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
@@ -215,68 +68,17 @@ async function getFilterDistrictRequest(req, res) {
                 { 
                     model: Customer, 
                     attributes:['name','city', 'district','wards','detailAddress'],
-                    where: {
-                        [Op.and]: [
-                            {city: city},
-                            {district: district},
-                        ]
-                    },
                 },
                 { model: Device, attributes:['deviceId'] },
                 { model: Staff, attributes:['staffId'] },
             ],
-            attributes:['id','services', 'note','status', 'customerPhone'],
-            offset: page,
-            limit: limit
-        })
-        .then(result =>{
-            {
-                rows= result.rows.map((item)=>{
-                     return {id:item.id,customerPhone:item.customerPhone,
-                     services:item.services,
-                     note:item.note,
-                     deviceId:item.device.deviceId,
-                     name:item.customer.name,
-                     city:item.customer.city,
-                     district:item.customer.district,
-                     wards:item.customer.wards,
-                     staffId:item.staff.staffId,
-                     services:item.services,
-                     status:item.status,
-                     detailAddress:item.customer.detailAddress
-                     }
-                 })
-             }
-             res.json({rows,count:result.count})
-        })
-        .catch(error => {
-            res.status(412).json({msg: error.message});
-        });
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-async function getFilterWardsRequest(req, res) {
-    try {
-        let {city, district, wards} = req.body;
-        let {page, limit} = utils.pagination(req.query, 10)
-        await Request.findAndCountAll({
-            include: [
-                { 
-                    model: Customer, 
-                    attributes:['name','city', 'district','wards','detailAddress'],
-                    where: {
-                        [Op.and]: [
-                            {city: city},
-                            {district: district},
-                            {wards: wards}
-                        ]
-                    },
-                },
-                { model: Device, attributes:['deviceId'] },
-                { model: Staff, attributes:['staffId'] },
-            ],
+            where: {
+                [Op.and]: [
+                    {'$Customer.city$': city},
+                    {'$Customer.district$': district},
+                    {services: 4}
+                ]
+            },
             attributes:['id','services', 'note','status', 'customerPhone'],
             offset: page,
             limit: limit
@@ -309,7 +111,60 @@ async function getFilterWardsRequest(req, res) {
     }
 }
 
-async function getFilterRequest(req, res) {
+async function getFilterWardsServicesBnl(req, res) {
+    try {
+        let {city, district, wards} = req.body;
+        let {page, limit} = utils.pagination(req.query, 10)
+        await Request.findAndCountAll({
+            include: [
+                { 
+                    model: Customer, 
+                    attributes:['name','city', 'district','wards','detailAddress'],
+                },
+                { model: Device, attributes:['deviceId'] },
+                { model: Staff, attributes:['staffId'] },
+            ],
+            where: {
+                [Op.and]: [
+                    {'$Customer.city$': city},
+                    {'$Customer.district$': district},
+                    {'$Customer.wards$': wards},
+                    {services: 4}
+                ]
+            },
+            attributes:['id','services', 'note','status', 'customerPhone'],
+            offset: page,
+            limit: limit
+        })
+        .then(result => {
+            {
+                rows= result.rows.map((item)=>{
+                     return {id:item.id,customerPhone:item.customerPhone,
+                     services:item.services,
+                     note:item.note,
+                     deviceId:item.device.deviceId,
+                     name:item.customer.name,
+                     city:item.customer.city,
+                     district:item.customer.district,
+                     wards:item.customer.wards,
+                     staffId:item.staff.staffId,
+                     services:item.services,
+                     status:item.status,
+                     detailAddress:item.customer.detailAddress
+                     }
+                 })
+             }
+             res.json({rows,count:result.count})
+        })
+        .catch(error => {
+            res.status(412).json({msg: error.message});
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getFilterServicesBnl(req, res) {
     try {
         let {search} = req.body;
         let {page, limit} = utils.pagination(req.query, 10)
@@ -322,18 +177,23 @@ async function getFilterRequest(req, res) {
                 { model: Device, attributes:['deviceId'] },
                 { model: Staff, attributes:['staffId'] },
             ],
-            attributes:['id','services', 'note','status', 'customerPhone'],
             where: {
-                [Op.or]: [
-                    {id: {[Op.substring]: search}},
-                    {note: {[Op.substring]: search}},
-                    {customerPhone: { [Op.substring]: search }},
-                    {'$Customer.name$': { [Op.substring]: search }},
-                    {'$Customer.detailAddress$': { [Op.substring]: search }},
-                    {'$Device.deviceId$': { [Op.substring]: search }},
-                    {'$Staff.staffId$': { [Op.substring]: search }},
+                [Op.and]: [
+                    {services: 4},
+                    {
+                        [Op.or]: [
+                            {id: {[Op.substring]: search}},
+                            {'$Customer.name$': {[Op.substring]: search}},
+                            {'$Customer.detailAddress$': {[Op.substring]: search}},
+                            {'$Staff.staffId$': {[Op.substring]: search}},
+                            {'$Device.deviceId$': {[Op.substring]: search}},
+                            {customerPhone: {[Op.substring]: search}},
+                            {note: {[Op.substring]: search}},
+                        ]
+                    }
                 ]
             },
+            attributes:['id','services', 'note','status', 'customerPhone'],
             offset: page,
             limit: limit
         })
@@ -365,7 +225,7 @@ async function getFilterRequest(req, res) {
     }
 }
 
-async function getFilterStatusRequest(req, res) {
+async function getFilterStatusServicesBnl(req, res) {
     try {
         let {status} = req.body;
         console
@@ -381,7 +241,10 @@ async function getFilterStatusRequest(req, res) {
             ],
             attributes:['id','services', 'note','status', 'customerPhone'],
             where: {
-                status: status
+                [Op.and]: [
+                    {services: 4},
+                    {status: status}
+                ]
             },
             offset: page,
             limit: limit
@@ -412,15 +275,10 @@ async function getFilterStatusRequest(req, res) {
     }
 }
 
-
 module.exports = {
-    getDataRequest,
-    insertRequest,
-    deleteRequest,
-    updateRequest,
-    getFilterCityRequest,
-    getFilterDistrictRequest,
-    getFilterWardsRequest,
-    getFilterRequest,
-    getFilterStatusRequest,
+    getFilterCityServicesBnl,
+    getFilterDistrictServicesBnl,
+    getFilterWardsServicesBnl,
+    getFilterServicesBnl,
+    getFilterStatusServicesBnl
 }

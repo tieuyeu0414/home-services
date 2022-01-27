@@ -14,11 +14,11 @@ const sequelize = new Sequelize(database, user, password, {
 });
 
  
-let connect = () =>{
+async function connect(){
     try {
         sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        sequelize.sync()
+        await sequelize.sync()
         .then((res) => {
             console.log();(`Đã đồng bộ model.`);
         })

@@ -6,32 +6,6 @@ const path = require('path');
 const fs = require('fs');
 
 
-async function login(req, res){
-    const {email, password} = req.body;
-    try {
-        if (!email || !password)
-            res.send('email and password are required');
-
-        let staff = await Staff.findOne({
-            where: {email},
-        });
-        if (!staff || !staff.comparePassword(password)){
-            res.send('Wrong email or password');
-        }  
-        else{
-            await Staff.findOne({
-                attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
-                where: {email},
-            })
-            .then(result => res.json(result))
-            .catch(error => {
-                res.status(412).json({msg: error.message});
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 async function getDataStaff(req, res){
     try {
@@ -39,7 +13,7 @@ async function getDataStaff(req, res){
          Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber','avatar', 'city', 'district', 'wards', 'role'],
             where: {
-                role: { [Op.notLike]: 6 }
+                role: { [Op.not]: [6] }
             },
             offset: page,
             limit: limit
@@ -83,8 +57,8 @@ async function setEditStaff(req, res) {
     try {
         let id = req.params.id;
         let getStaff = await Staff.findByPk(id);
-        let {fullName, phoneNumber, city, district, wards, role, isActive} = req.body;
-        let avatar = req.file.path;
+        let {fullName, phoneNumber, city, district, wards, role, isActive,avatar} = req.body;
+        //let avatar = req.file.path;
 
         let dataUpdate = {
             fullName: !fullName ? getStaff.fullName : fullName,
@@ -138,7 +112,12 @@ async function getFilterCityStaff(req, res) {
         let {page, limit} = utils.pagination(req.query, 10)
         await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
-            where: {city: city},
+            where: {
+                [Op.and]: [
+                    {city: city},
+                    {role: { [Op.not]: [6] }}
+                ]
+            },
             offset: page,
             limit: limit
         })
@@ -161,6 +140,7 @@ async function getFilterDistrictStaff(req, res) {
                 [Op.and]: [
                     {city: city},
                     {district: district},
+                    {role: { [Op.not]: [6] }}
                 ]
             },
             offset: page,
@@ -185,7 +165,8 @@ async function getFilterWardsStaff(req, res) {
                 [Op.and]: [
                     {city: city},
                     {district: district},
-                    {wards: wards}
+                    {wards: wards},
+                    {role: { [Op.not]: [6] }}
                 ]
             },
             offset: page,
@@ -207,12 +188,17 @@ async function getFilterStaff(req, res) {
         await Staff.findAndCountAll({
             attributes: ['id', 'fullName', 'staffId', 'phoneNumber', 'city', 'district', 'wards', 'role'],
             where: {
-                [Op.or]: [
-                    {id: {[Op.substring]: search}},
-                    {fullName: {[Op.substring]: search}},
-                    {phoneNumber: {[Op.substring]: search}},
-                    {staffId: {[Op.substring]: search}},
-                    {role: {[Op.substring]: search}},
+                [Op.and]: [
+                    {role: { [Op.not]: [6] }},
+                    {
+                        [Op.or]: [
+                            {id: {[Op.substring]: search}},
+                            {fullName: {[Op.substring]: search}},
+                            {phoneNumber: {[Op.substring]: search}},
+                            {staffId: {[Op.substring]: search}},
+                            {role: {[Op.substring]: search}},
+                        ]
+                    }
                 ]
             },
             offset: page,
@@ -256,7 +242,6 @@ const upload = multer({
 }).single('avatar')
 
 module.exports = {
-    login,
     getDataStaff,
     setInsertStaff,
     setEditStaff,
@@ -265,6 +250,5 @@ module.exports = {
     getFilterDistrictStaff,
     getFilterWardsStaff,
     getFilterStaff,
-    upload,
-    storage
+    upload
 }
