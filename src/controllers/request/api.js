@@ -412,52 +412,6 @@ async function getFilterStatusRequest(req, res) {
     }
 }
 
-// async function getFilterServicesRequest(req, res) {
-//     try {
-//         let services = req.params.num;
-//         let {page, limit} = utils.pagination(req.query, 10)
-//         await Request.findAndCountAll({
-//             include: [
-//                 { 
-//                     model: Customer, 
-//                     attributes:['name','city', 'district','wards','detailAddress'],
-//                 },
-//                 { model: Device, attributes:['deviceId'] },
-//                 { model: Staff, attributes:['staffId'] },
-//             ],
-//             attributes:['id','services', 'note','status', 'customerPhone'],
-//             where: {
-//                 services: services
-//             },
-//             offset: page,
-//             limit: limit
-//         })
-//         .then(result =>{
-//             rows= result.rows.map((item)=>{
-//                 return {id:item.id,customerPhone:item.customerPhone,
-//                 services:item.services,
-//                 note:item.note,
-//                 deviceId:item.device.deviceId,
-//                 name:item.customer.name,
-//                 city:item.customer.city,
-//                 district:item.customer.district,
-//                 wards:item.customer.wards,
-//                 staffId:item.staff.staffId,
-//                 services:item.services,
-//                 status:item.status,
-//                 detailAddress:item.customer.detailAddress
-//                 }
-//             })
-//             res.json({rows,count:result.count})
-//         })
-//         .catch(error => {
-//             res.status(412).json({msg: error.message});
-//         });
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
-
 
 module.exports = {
     getDataRequest,
